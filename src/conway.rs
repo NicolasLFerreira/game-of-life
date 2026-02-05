@@ -31,7 +31,7 @@ pub fn simulation(cells: &mut Grid) {
         for x in 0..GRID_WIDTH {
             let index = idx(y, x);
             let is_alive = current_state[index];
-            let alive_neighbours = neighbours((y, x), &current_state)
+            let alive_neighbours = neighbours((y, x))
                 .iter()
                 .filter(|&&(ny, nx)| current_state[idx(ny, nx)])
                 .count();
@@ -47,7 +47,7 @@ pub fn simulation(cells: &mut Grid) {
     }
 }
 
-pub fn neighbours(coord: Coord, cells: &Grid) -> Vec<Coord> {
+pub fn neighbours(coord: Coord) -> Vec<Coord> {
     let (y, x) = coord;
     let y = y as i32;
     let x = x as i32;

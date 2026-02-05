@@ -7,6 +7,7 @@ const GRID_HEIGHT: usize = 9 * 6;
 const CELL_SIZE: f32 = 16.0;
 const UI_WIDTH: f32 = 200.0;
 const GRID_WIDTH_PX: f32 = GRID_WIDTH as f32 * CELL_SIZE;
+const GRID_HEIGHT_PX: f32 = GRID_HEIGHT as f32 * CELL_SIZE;
 const TICK_DURATION: f32 = 0.1;
 
 type Grid = Vec<bool>;
@@ -52,9 +53,7 @@ async fn main() {
 
         // input stuff
         let (mx, my) = mouse_position();
-        if (mx >= 0.0 && mx < GRID_WIDTH as f32 * CELL_SIZE)
-            && (my >= 0.0 && my < GRID_HEIGHT as f32 * CELL_SIZE)
-        {
+        if (mx >= 0.0 && mx < GRID_WIDTH_PX) && (my >= 0.0 && my < GRID_HEIGHT_PX) {
             if is_mouse_button_pressed(MouseButton::Left) {
                 let (nmy, nmx) = normalize_mouse(my, mx);
                 cells[idx(nmy, nmx)] = true;
