@@ -2,8 +2,8 @@ mod conway;
 use conway::*;
 use macroquad::prelude::*;
 
-const GRID_WIDTH: usize = 100;
-const GRID_HEIGHT: usize = 50;
+const GRID_WIDTH: usize = 21*6;
+const GRID_HEIGHT: usize = 9*6;
 const CELL_SIZE: f32 = 16f32;
 const TICK_DURATION: f32 = 0.2;
 
