@@ -25,19 +25,20 @@ fn window_conf() -> Conf {
 async fn main() {
     let mut cells: Grid = vec![false; GRID_WIDTH * GRID_HEIGHT];
 
-    // Seeding
-    let glider: Vec<Vec<bool>> = vec![
-        vec![false, false, true],
-        vec![true, false, true],
-        vec![false, true, true],
-    ];
-    let shape = shape_translate(glider.clone(), 16, 24);
-    seed(&mut cells, shape);
-    let shape = shape_translate(glider.clone(), 20, 28);
-    seed(&mut cells, shape);
+    // // Seeding
+    // let glider: Vec<Vec<bool>> = vec![
+    //     vec![false, false, true],
+    //     vec![true, false, true],
+    //     vec![false, true, true],
+    // ];
+    // let shape = shape_translate(glider.clone(), 16, 24);
+    // seed(&mut cells, shape);
+    // let shape = shape_translate(glider.clone(), 20, 28);
+    // seed(&mut cells, shape);
 
     // Simulation
     let mut is_running = false;
+    let mut show_grid = false;
     let mut tick_timer = 0.0f32;
     loop {
         // time step
@@ -55,21 +56,31 @@ async fn main() {
             cells[index] = !cur;
         }
 
-        if is_key_pressed(KeyCode::Space){
+        if is_key_pressed(KeyCode::Space) {
             is_running = !is_running;
+        }
+
+        if is_key_pressed(KeyCode::G) {
+            show_grid = !show_grid;
         }
 
         // render
         clear_background(WHITE);
         for y in 0..GRID_HEIGHT {
             for x in 0..GRID_WIDTH {
-                draw_rectangle(
-                    x as f32 * CELL_SIZE,
-                    y as f32 * CELL_SIZE,
-                    CELL_SIZE,
-                    CELL_SIZE,
-                    if (x + y) % 2 == 0 {RED} else {BLUE}
-                );
+                if show_grid {
+                    draw_rectangle(
+                        x as f32 * CELL_SIZE,
+                        y as f32 * CELL_SIZE,
+                        CELL_SIZE,
+                        CELL_SIZE,
+                        if (x + y) % 2 == 0 {
+                            Color::new(0.92, 0.92, 0.92, 1.0)
+                        } else {
+                            Color::new(0.96, 0.96, 0.96, 1.0)
+                        },
+                    );
+                }
                 if cells[idx(y, x)] {
                     draw_rectangle(
                         x as f32 * CELL_SIZE,
