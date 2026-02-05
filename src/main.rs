@@ -23,7 +23,7 @@ fn window_conf() -> Conf {
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    let mut cells: Grid = vec![false; GRID_WIDTH * GRID_HEIGHT];
+    let mut cells: Grid = empty_grid();
 
     // // Seeding
     // let glider: Vec<Vec<bool>> = vec![
@@ -48,12 +48,13 @@ async fn main() {
         // input stuff
         let (mx, my) = mouse_position();
         if is_mouse_button_pressed(MouseButton::Left) {
-            let nmy = ((my - (my % CELL_SIZE)) / CELL_SIZE) as usize;
-            let nmx = ((mx - (mx % CELL_SIZE)) / CELL_SIZE) as usize;
+            let (nmy, nmx) = normalize_mouse(my, mx);
+            cells[idx(nmy, nmx)] = true;
+        }
 
-            let index = idx(nmy, nmx);
-            let cur = cells[index];
-            cells[index] = !cur;
+        if is_mouse_button_pressed(MouseButton::Right) {
+            let (nmy, nmx) = normalize_mouse(my, mx);
+            cells[idx(nmy, nmx)] = false;
         }
 
         if is_key_pressed(KeyCode::Space) {
@@ -62,6 +63,10 @@ async fn main() {
 
         if is_key_pressed(KeyCode::G) {
             show_grid = !show_grid;
+        }
+
+        if is_key_pressed(KeyCode::C) {
+            cells = empty_grid();
         }
 
         // render
@@ -101,4 +106,15 @@ async fn main() {
 
         next_frame().await;
     }
+}
+
+fn normalize_mouse(my: f32, mx: f32) -> (usize, usize) {
+    (
+        ((my - (my % CELL_SIZE)) / CELL_SIZE) as usize,
+        ((mx - (mx % CELL_SIZE)) / CELL_SIZE) as usize,
+    )
+}
+
+fn empty_grid() -> Grid {
+    vec![false; GRID_WIDTH * GRID_HEIGHT]
 }
