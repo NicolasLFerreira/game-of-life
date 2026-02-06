@@ -172,8 +172,9 @@ async fn main() {
 
         // actual sim run
         if (tick_timer >= TICK_DURATION && is_running) || (step_once && !is_running) {
-            simulation(&mut cells);
+            // Calculate canonical before stepping simulation
             canonical_entry_point(&cells);
+            simulation(&mut cells);
             tick_timer = 0.0;
             step_once = false;
         }
