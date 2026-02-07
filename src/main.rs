@@ -296,7 +296,7 @@ impl eframe::App for App {
             let size = viewport.size();
             let center = anchor + size * 0.5;
 
-            // store panning
+            // panning
             if response.dragged() {
                 let input = response.ctx.input(|i| i.clone());
                 if input.pointer.button_down(egui::PointerButton::Middle) {
@@ -304,6 +304,7 @@ impl eframe::App for App {
                 }
             }
 
+            // paint cells
             if response.clicked() || response.dragged() {
                 let input = response.ctx.input(|i| i.clone());
 
