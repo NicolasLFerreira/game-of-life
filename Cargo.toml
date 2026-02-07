@@ -4,8 +4,16 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+egui = "0.33.3"
 macroquad = "0.4.14"
 wyhash = "0.6.0"
+eframe = "0.33.3"
 
 [target.x86_64-pc-windows-gnu]
 rustflags = ["-C", "target-feature=+crt-static"]
+
+[features]
+macroquad-renderer = []
+egui-renderer = []
+
+default = ["macroquad-renderer"]

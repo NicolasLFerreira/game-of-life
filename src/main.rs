@@ -4,6 +4,7 @@ mod thanatos_core;
 
 use crate::thanatos_core::thanatos_core;
 use conway::*;
+use egui;
 use macroquad::prelude::*;
 use std::collections::HashSet;
 use std::time::Instant;
@@ -33,6 +34,7 @@ fn window_conf() -> Conf {
     }
 }
 
+#[cfg(feature = "macroquad-renderer")]
 #[macroquad::main(window_conf)]
 async fn main() {
     let mut cells: Grid = HashSet::new();
@@ -210,4 +212,106 @@ fn logical_step(mut configuration: &mut Grid) {
 
     let elapsed = start.elapsed();
     println!("Simulation: {:?}", elapsed);
+}
+
+#[cfg(feature = "egui-renderer")]
+fn main() {
+    let native_options = eframe::NativeOptions::default();
+    eframe::run_native(
+        "EGUI TEST APP",
+        native_options,
+        Box::new(|cc| Ok(Box::new(App::new(cc)))),
+    )
+    .unwrap();
+}
+
+#[derive(Default)]
+struct App {
+    grid_pan: egui::Vec2,
+}
+
+impl App {
+    fn new(cc: &eframe::CreationContext<'_>) -> Self {
+        Self::default()
+    }
+}
+
+impl eframe::App for App {
+    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        egui::TopBottomPanel::top("top").show(ctx, |ui| {
+            egui::containers::menu::MenuBar::new().ui(ui, |ui| {
+                ui.menu_button("File", |ui| {
+                    if ui.button("New").clicked() {
+                        println!("New clicked");
+                    }
+                    if ui.button("Open").clicked() {
+                        println!("Open clicked");
+                    }
+                });
+                ui.menu_button("Edit", |ui| {
+                    if ui.button("Undo").clicked() {
+                        println!("Undo");
+                    }
+                });
+            });
+        });
+        egui::SidePanel::left("stats").show(ctx, |ui| {
+            ui.heading("Simulation Statistics");
+        });
+        egui::SidePanel::right("tools").show(ctx, |ui| {
+            ui.heading("Simulation Tools");
+            if ui.button("Step").clicked() {
+                println!("Stepping");
+            }
+        });
+        egui::CentralPanel::default().show(ctx, |ui| {
+            let (response, painter) =
+                ui.allocate_painter(ui.available_size(), egui::Sense::click_and_drag());
+
+            // display geometry values
+            let viewport = response.rect;
+            let anchor = viewport.min;
+            let center = anchor + viewport.size() * 0.5;
+
+            // store panning
+            if response.dragged() {
+                self.grid_pan += response.drag_delta();
+                println!("dragged {:?}", self.grid_pan)
+            }
+
+            // store click
+            if response.clicked() {
+                let click = response.interact_pointer_pos().unwrap();
+
+                let normalized = (
+                    ((click.x - center.x - self.grid_pan.x) / CELL_SIZE_PX).floor() as i32,
+                    ((click.y - center.y - self.grid_pan.y) / CELL_SIZE_PX).floor() as i32,
+                );
+            }
+
+            // Paint white
+            painter.rect_filled(viewport, 0.0, egui::Color32::WHITE);
+
+            paint_cell(&painter, center, 0, 0, self.grid_pan, egui::Color32::BLACK);
+        });
+    }
+}
+
+#[inline(always)]
+fn paint_cell(
+    painter: &egui::Painter,
+    origin: egui::Pos2,
+    wx: i32,
+    wy: i32,
+    pan: egui::Vec2,
+    color: egui::Color32,
+) {
+    let pos = egui::pos2(
+        origin.x + wx as f32 * CELL_SIZE_PX + pan.x,
+        origin.y + wy as f32 * CELL_SIZE_PX + pan.y,
+    );
+
+    let rect = egui::Rect::from_min_size(pos, egui::vec2(CELL_SIZE_PX, CELL_SIZE_PX));
+
+    painter.rect_filled(rect, 0.0, color);
 }
