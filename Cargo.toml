@@ -16,4 +16,4 @@ rustflags = ["-C", "target-feature=+crt-static"]
 macroquad-renderer = []
 egui-renderer = []
 
-default = ["macroquad-renderer"]
+default = ["egui-renderer"]
