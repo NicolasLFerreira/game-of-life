@@ -1,6 +1,7 @@
 mod conway;
 mod thanatos;
 mod ui;
+mod types;
 
 use conway::simulation::*;
 use eframe::Renderer;
