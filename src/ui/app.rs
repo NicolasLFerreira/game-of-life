@@ -1,12 +1,7 @@
 use crate::types::cell_configuration::CellConfiguration;
 use crate::types::cell_coord::CellCoord;
-use crate::{CELL_SIZE_PX, logical_step};
-
-struct SimulationState {
-    cells: CellConfiguration,
-    is_running: bool,
-    step_once: bool,
-}
+use crate::types::simulation_state::SimulationState;
+use crate::{logical_step, CELL_SIZE_PX};
 
 pub struct App {
     grid_pan: egui::Vec2,
@@ -18,9 +13,9 @@ impl App {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         Self {
             grid_pan: egui::Vec2::default(),
-            show_grid: true,
+            show_grid: false,
             sim_state: SimulationState {
-                cells: CellConfiguration::new(),
+                cell_configuration: CellConfiguration::new(),
                 step_once: false,
                 is_running: false,
             },
@@ -59,7 +54,7 @@ impl eframe::App for App {
                 self.sim_state.step_once = true;
             }
             if ui.button("Clear").clicked() {
-                self.sim_state.cells = CellConfiguration::new();
+                self.sim_state.cell_configuration = CellConfiguration::new();
                 self.grid_pan = egui::Vec2::default();
             }
         });
@@ -94,9 +89,9 @@ impl eframe::App for App {
                 let ccoord = CellCoord::new(x, y);
 
                 if input.pointer.button_down(egui::PointerButton::Primary) {
-                    self.sim_state.cells.spawn(ccoord);
+                    self.sim_state.cell_configuration.spawn(ccoord);
                 } else if input.pointer.button_down(egui::PointerButton::Secondary) {
-                    self.sim_state.cells.despawn(ccoord);
+                    self.sim_state.cell_configuration.despawn(ccoord);
                 }
             }
 
@@ -128,7 +123,7 @@ impl eframe::App for App {
                 painter.rect_filled(viewport, 0.0, egui::Color32::WHITE);
             }
 
-            for cell in self.sim_state.cells.iter() {
+            for cell in self.sim_state.cell_configuration.iter() {
                 paint_cell(
                     &painter,
                     center,
@@ -143,7 +138,7 @@ impl eframe::App for App {
         // Sim run, uncapped rn
         if self.sim_state.is_running || self.sim_state.step_once {
             self.sim_state.step_once = false;
-            self.sim_state.cells = logical_step(&self.sim_state.cells);
+            self.sim_state.cell_configuration = logical_step(&self.sim_state.cell_configuration);
             ctx.request_repaint()
         }
     }
