@@ -1,7 +1,7 @@
 use criterion::{Criterion, criterion_group, criterion_main};
 use std::hint::black_box;
-use tmfroc::conway;
-use tmfroc::types::cell_configuration::CellConfiguration;
+use thanatos::conway;
+use thanatos::types::cell_configuration::CellConfiguration;
 
 fn bench_simulation(c: &mut Criterion) {
     let seed_cells = CellConfiguration::random_configuration(42, 50, 50, 0.5);
@@ -13,9 +13,9 @@ fn bench_simulation(c: &mut Criterion) {
         })
     });
 
-    c.bench_function("thanatos", |b| {
+    c.bench_function("mfroc", |b| {
         b.iter(|| {
-            tmfroc::thanatos::tmfroc::run(black_box(&input));
+            thanatos::mfroc::process_mfroc(black_box(&input));
         })
     });
 }

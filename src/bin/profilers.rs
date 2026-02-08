@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::Write;
-use tmfroc::types::cell_configuration::CellConfiguration;
-use tmfroc::*;
+use thanatos::types::cell_configuration::CellConfiguration;
+use thanatos::*;
 
 fn main() {
     let seed = CellConfiguration::random_configuration(42, 10, 10, 0.2);

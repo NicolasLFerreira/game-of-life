@@ -3,13 +3,13 @@ use eframe::Renderer;
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
-use tmfroc::conway;
-use tmfroc::thanatos;
-use tmfroc::types::cell_configuration::CellConfiguration;
-use tmfroc::types::cell_coord::CellCoord;
-use tmfroc::types::simulation_feed::SimulationFeed;
-use tmfroc::types::simulation_payload::SimulationPayload;
-use tmfroc::ui::app::App;
+use thanatos::conway;
+use thanatos::mfroc;
+use thanatos::types::cell_configuration::CellConfiguration;
+use thanatos::types::cell_coord::CellCoord;
+use thanatos::types::simulation_feed::SimulationFeed;
+use thanatos::types::simulation_payload::SimulationPayload;
+use thanatos::ui::app::App;
 
 fn main() {
     let glider: Vec<CellCoord> = vec![
@@ -36,7 +36,7 @@ fn start_simulation(seed_cells: Vec<CellCoord>, feed: SimulationFeed) {
     let mut cconf = CellConfiguration::with_seed_configuration(seed_cells);
     loop {
         // Run Thanatos on current configuration
-        thanatos::tmfroc::run(&cconf);
+        mfroc::process_mfroc(&cconf);
 
         // Step Conway
         let new_cconf = conway::step(&cconf);
@@ -57,7 +57,7 @@ fn start_ui(feed: SimulationFeed) {
         ..Default::default()
     };
     eframe::run_native(
-        "Thanatos CGoL",
+        "Thanatos",
         native_options,
         Box::new(|cc| Ok(Box::new(App::new(cc, feed)))),
     )

@@ -1,10 +1,8 @@
-use crate::thanatos::canonical::compute_canonical;
+use crate::mfroc::canonical::compute_canonical;
 use crate::types::cell_configuration::CellConfiguration;
 use wyhash::wyhash;
 
-/// Heart of Thanatos: MFROC
-/// Thanatos: Memoized Forward-Reachability Orbit-Collapsing Algorithm for CGoL
-pub fn run(configuration: &CellConfiguration) {
+pub fn process_mfroc(configuration: &CellConfiguration) {
     let canonical = compute_canonical(configuration);
     let hash = compute_hash(&canonical);
 }
