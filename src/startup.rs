@@ -1,4 +1,4 @@
-use crate::orchestration::{SimulationOrchestration, SimulationParameters};
+use crate::orchestration::{SimulationParameters, start_simulation};
 use crate::types::{SimulationFeed, SimulationPayload};
 use crate::ui::app::App;
 use crossbeam::atomic::AtomicCell;
@@ -6,21 +6,25 @@ use eframe::Renderer;
 use std::sync::Arc;
 
 pub struct StartupParameters {
-    pub run_headless: bool,
     pub max_runs: u32,
+    pub max_generations: u32,
+    pub run_headless: bool,
 }
 
 /// Sets up the different parts of the program
 pub fn startup(parameters: StartupParameters) {
+    // Simulation state feed setup
     let feed = Arc::new(AtomicCell::new(Arc::new(SimulationPayload::default())));
-    let so = SimulationOrchestration::new(Arc::clone(&feed));
 
-    so.start(SimulationParameters {
+    start_simulation(SimulationParameters {
+        feed: Arc::clone(&feed),
         max_run_count: parameters.max_runs,
-        blocking: false,
-        uncapped: parameters.run_headless,
+        max_generation_count: parameters.max_generations,
+        run_uncapped: parameters.run_headless,
+        blocking: parameters.run_headless,
     });
 
+    // UI
     if !parameters.run_headless {
         start_ui(Arc::clone(&feed));
     }

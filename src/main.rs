@@ -7,8 +7,11 @@ struct Cli {
     #[arg(long, default_value_t = false)]
     headless: bool,
     // Run cap
-    #[arg(long, default_value_t = 1000)]
+    #[arg(long, default_value_t = 100)]
     max_runs: u32,
+    // Generation cap per run
+    #[arg(long, default_value_t = 1_000)]
+    max_generations: u32,
 }
 
 fn main() {
@@ -16,8 +19,9 @@ fn main() {
 
     // build startup
     let startup_params = StartupParameters {
-        run_headless: cli.headless,
         max_runs: cli.max_runs,
+        max_generations: cli.max_generations,
+        run_headless: cli.headless,
     };
 
     startup(startup_params);
