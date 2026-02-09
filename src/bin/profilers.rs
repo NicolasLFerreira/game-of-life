@@ -6,8 +6,8 @@ fn main() {
         .build()
         .unwrap();
 
-    let seed = thanatos::types::CellConfiguration::cook_soup(42, 10, 10, 0.2);
-    let cconf = thanatos::types::CellConfiguration::from_soup(seed);
+    let soup = thanatos::types::CellConfiguration::cook_soup(42, 10, 10, 0.2);
+    let cconf = thanatos::types::CellConfiguration::from_soup(soup);
     for _ in 0..10_000 {
         thanatos::conway::step(&cconf);
     }

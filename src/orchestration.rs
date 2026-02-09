@@ -69,11 +69,11 @@ fn state_machine(
 
 fn simulation_run(
     feed: SimulationFeed,
-    seed_cells: Vec<CellCoord>,
+    soup: Vec<CellCoord>,
     max_generation_count: u32,
     uncapped: bool,
 ) -> MfracOutcome {
-    let mut cconf = CellConfiguration::from_soup(seed_cells);
+    let mut cconf = CellConfiguration::from_soup(soup);
     for _ in 0..max_generation_count {
         // Run Thanatos on current configuration
         let option = mfrac::run_pipeline(&cconf);

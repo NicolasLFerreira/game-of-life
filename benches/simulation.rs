@@ -4,8 +4,8 @@ use thanatos::conway;
 use thanatos::types::CellConfiguration;
 
 fn bench_simulation(c: &mut Criterion) {
-    let seed_cells = CellConfiguration::cook_soup(42, 50, 50, 0.5);
-    let input = CellConfiguration::from_soup(seed_cells);
+    let soup = CellConfiguration::cook_soup(42, 50, 50, 0.5);
+    let input = CellConfiguration::from_soup(soup);
 
     c.bench_function("conway", |b| {
         b.iter(|| {
