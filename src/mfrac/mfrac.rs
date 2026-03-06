@@ -1,13 +1,13 @@
 use crate::mfrac::canonical::compute_canonical;
 use crate::mfrac::hash::canonical_hash;
-use crate::persistence::Database;
+use crate::persistence::DatabaseConnection;
 use crate::types::{
     CellConfiguration, ConfigurationChainNode, MfracOutcome, MfracStatus, MfracTerminationReason,
 };
 
 /// Heart of Thanatos
 pub struct Mfrac {
-    db: Database,
+    db: DatabaseConnection,
     cache: Vec<(u128, Vec<u64>)>,
     last_hash: u128,
 }
@@ -15,7 +15,7 @@ pub struct Mfrac {
 impl Mfrac {
     pub fn init() -> Self {
         Self {
-            db: Database::open(),
+            db: DatabaseConnection::open(),
             cache: Default::default(),
             last_hash: 0,
         }

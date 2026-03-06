@@ -2,4 +2,4 @@
 
 mod database;
 
-pub use database::Database;
+pub use database::DatabaseConnection;

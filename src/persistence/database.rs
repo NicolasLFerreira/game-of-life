@@ -1,12 +1,13 @@
 use crate::types::ConfigurationChainNode;
+use crate::utilities::bit_packing::unpack_u64_u32;
 use std::path::PathBuf;
 
 /// Wrapper for `sled::Db`
-pub struct Database {
+pub struct DatabaseConnection {
     db: sled::Db,
 }
 
-impl Database {
+impl DatabaseConnection {
     pub fn open() -> Self {
         Self {
             db: sled::open(db_path()).unwrap(),
@@ -30,6 +31,18 @@ impl Database {
     pub fn contains(&self, hash: u128) -> bool {
         let key = hash.to_be_bytes().to_vec();
         self.db.contains_key(key).unwrap()
+    }
+
+    pub fn evolution_line(&self, hash: u128) -> Vec<u128> {
+        let mut hashes: Vec<u128> = vec![];
+        let mut cur_hash = hash;
+
+        while let Some(v) = self.get(cur_hash) {
+            hashes.push(v.hash);
+            cur_hash = v.next_hash;
+        }
+
+        hashes
     }
 
     pub fn value_dump(&self) -> Vec<ConfigurationChainNode> {

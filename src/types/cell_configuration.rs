@@ -46,6 +46,18 @@ impl CellConfiguration {
 
         cconf
     }
+
+    pub fn from_tuple(tuple: Vec<(i32, i32)>) -> Self {
+        let mut cconf = CellConfiguration::new();
+        for pair in tuple {
+            cconf.spawn(CellCoord {
+                x: pair.0,
+                y: pair.1
+            })
+        }
+
+        cconf
+    }
 }
 
 // Interaction

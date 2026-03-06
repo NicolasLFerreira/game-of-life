@@ -1,4 +1,4 @@
-use crate::persistence::Database;
+use crate::persistence::DatabaseConnection;
 use crate::types::SimulationFeed;
 use crate::types::{ConfigurationChainNode, CellConfiguration};
 use std::time::Duration;
@@ -58,7 +58,7 @@ impl eframe::App for App {
 
             if response.lost_focus() {
                 if let Ok(parsed) = self.input_buffer.parse::<u128>() {
-                    let cconf = Database::open().get(parsed).unwrap();
+                    let cconf = DatabaseConnection::open().get(parsed).unwrap();
                     self.can_conf = cconf.clone();
                     self.cconf = CellConfiguration::from_packed(cconf.configuration);
                 }
@@ -69,7 +69,7 @@ impl eframe::App for App {
             ui.checkbox(&mut self.show_grid, "Show Grid (laggy)");
             ui.heading("Simulation tools");
             if ui.button("Step").clicked() {
-                let cconf = Database::open().get(self.can_conf.next_hash).unwrap();
+                let cconf = DatabaseConnection::open().get(self.can_conf.next_hash).unwrap();
                 self.can_conf = cconf.clone();
                 self.cconf = CellConfiguration::from_packed(cconf.configuration);
             }
